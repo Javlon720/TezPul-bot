@@ -1,58 +1,44 @@
-import { query } from '../db/db.js';
 
-/**
- * The Notification Engine acts as a bridge. 
- * We store references to the running bot instances here to trigger messages 
- * from the backend API without circular dependencies.
- */
+import { safeSend } from '../utils/safe-send.js';
+import { logger } from '../utils/logger.js';
+import { deactivateUser } from '../db/queries/users.queries.js';
+import { dbPool } from '../db/pool.js';
 
-let userBotInstance = null;
-let adminBotInstance = null;
-
-export function setBotInstances(userBot, adminBot) {
-    userBotInstance = userBot;
-    adminBotInstance = adminBot;
+export async function notifyUser(bot, telegramId, text, options = {}) {
+  return safeSend(bot, telegramId, text, options, async () => {
+    logger.warn('User blocked bot or forbidden', telegramId);
+    try {
+      await deactivateUser(dbPool, telegramId);
+    } catch (error) {
+      logger.debug('Failed to deactivate blocked user', error?.message || error);
+    }
+  });
 }
 
-export async function notifyNewReferral(userId, amount, level) {
-    if (!userBotInstance) return;
-    
-    try {
-        const userRes = await query(`SELECT telegram_id, language FROM users WHERE id = $1`, [userId]);
-        if (userRes.rows.length === 0) return;
-        
-        const { telegram_id, language } = userRes.rows[0];
-        
-        const text = language === 'uz' 
-            ? `🎉 Yangi taklif (${level}-daraja)! Sizga ${amount} so'm qo'shildi.`
-            : `🎉 New referral (Level ${level})! You earned ${amount}.`;
-            
-        await userBotInstance.telegram.sendMessage(telegram_id, text);
-    } catch (e) {
-        console.error("Failed to notify user about referral:", e);
-    }
+export async function notifyAdmin(bot, telegramId, text, options = {}) {
+  return safeSend(bot, telegramId, text, options);
 }
 
-export async function notifyPaymentUpdate(userId, paymentInfo) {
-    if (!userBotInstance) return;
+export async function broadcastCampaignUpdate(bot, client, campaignId, message) {
+  const referralQuery = await client.query(
+    `SELECT DISTINCT r.referrer_id, u.telegram_id
+     FROM referrals r
+     JOIN users u ON u.telegram_id = r.referrer_id
+     WHERE r.campaign_id = $1`,
+    [campaignId]
+  );
 
-    try {
-        const userRes = await query(`SELECT telegram_id, language FROM users WHERE id = $1`, [userId]);
-        if (userRes.rows.length === 0) return;
-
-        const { telegram_id, language } = userRes.rows[0];
-        
-        const text = language === 'uz'
-            ? `💰 To'lov holati yangilandi! Holat: ${paymentInfo.status}\nTo'langan: ${paymentInfo.amountPaid}`
-            : `💰 Payment updated! Status: ${paymentInfo.status}\nPaid: ${paymentInfo.amountPaid}`;
-
-        // If proof image is provided, send as photo with text as caption
-        if (paymentInfo.fileId) {
-            await userBotInstance.telegram.sendPhoto(telegram_id, paymentInfo.fileId, { caption: text });
-        } else {
-            await userBotInstance.telegram.sendMessage(telegram_id, text);
-        }
-    } catch (e) {
-        console.error("Failed to notify user about payment update:", e);
+  const rows = referralQuery.rows || [];
+  let success = 0;
+  let failed = 0;
+  for (const row of rows) {
+    const chatId = Number(row.telegram_id);
+    const result = await safeSend(bot, chatId, message, {});
+    if (result.success) {
+      success += 1;
+    } else {
+      failed += 1;
     }
+  }
+  return { success, failed };
 }

@@ -1,58 +1,104 @@
-import  dotenv from 'dotenv';
-import Fastify from 'fastify';
-import { setupUserBot } from './src/bots/userBot.js';
-import { setupAdminBot } from './src/bots/adminBot.js';
-import { dbConfig } from './src/db/db.js';
-import { setBotInstances } from './src/core/notification.engine.js';
 
-dotenv.config();
-const app = Fastify({ logger: true });
+import http from 'http';
+import { config } from './src/config/index.js';
+import { createUserBot } from './src/bots/userBot/index.js';
+import { createAdminBot } from './src/bots/adminBot/index.js';
+import { runStartupChecks } from './src/services/startup.service.js';
+import { logger } from './src/utils/logger.js';
+
+function parseJsonBody(req) {
+  return new Promise((resolve, reject) => {
+    let body = '';
+    req.on('data', (chunk) => {
+      body += chunk.toString();
+    });
+    req.on('end', () => {
+      if (!body) {
+        return resolve(null);
+      }
+      try {
+        resolve(JSON.parse(body));
+      } catch (error) {
+        reject(error);
+      }
+    });
+    req.on('error', reject);
+  });
+}
+
+function createWebhookServer(userBot, adminBot) {
+  return http.createServer(async (req, res) => {
+    try {
+      if (req.method !== 'POST') {
+        res.writeHead(404);
+        return res.end('Not Found');
+      }
+      const url = new URL(req.url, `http://${req.headers.host}`);
+      if (url.pathname === `/user/${config.webhookSecret}`) {
+        const update = await parseJsonBody(req);
+        await userBot.processUpdate(update);
+        res.writeHead(200);
+        return res.end('ok');
+      }
+      if (url.pathname === `/admin/${config.webhookSecret}`) {
+        const update = await parseJsonBody(req);
+        await adminBot.processUpdate(update);
+        res.writeHead(200);
+        return res.end('ok');
+      }
+      res.writeHead(404);
+      res.end('Not Found');
+    } catch (error) {
+      logger.error('Webhook request failed', error.message || error);
+      res.writeHead(500);
+      res.end('Internal Server Error');
+    }
+  });
+}
+
+process.on('uncaughtException', (error) => {
+  logger.error('uncaughtException', error.message || error, error.stack || '');
+});
+
+process.on('unhandledRejection', (reason) => {
+  logger.error('unhandledRejection', reason);
+});
 
 async function start() {
-  try {
-    // 1. Check DB Connection
-    const client = await dbConfig.connect();
-    client.release();
-    app.log.info('Database connected successfully.');
+  const userBot = createUserBot();
+  const adminBot = createAdminBot();
+  await runStartupChecks(userBot, adminBot);
 
-    // 2. Initialize Bots
-    const userBot = setupUserBot();
-    const adminBot = setupAdminBot();
-
-    // Link bots to the Notification Engine for backend-to-bot alerts
-    setBotInstances(userBot, adminBot);
-
-    // In a production environment, you might want to use webhooks instead of polling.
-    // For this boilerplate, we'll start them with long polling.
-    userBot.launch();
-    adminBot.launch();
-    app.log.info('Telegram Bots launched successfully.');
-
-    // 3. Start Fastify Server (Backend API)
-    app.get('/health', async (request, reply) => {
-      return { status: 'ok', time: new Date().toISOString() };
+  if (config.webhookUrl) {
+    const userPath = `${config.webhookUrl.replace(/\/$/, '')}/user/${config.webhookSecret}`;
+    const adminPath = `${config.webhookUrl.replace(/\/$/, '')}/admin/${config.webhookSecret}`;
+    await userBot.setWebHook(userPath);
+    await adminBot.setWebHook(adminPath);
+    const server = createWebhookServer(userBot, adminBot);
+    server.listen(config.webhookPort, () => {
+      logger.info(`Webhook server listening on port ${config.webhookPort}`);
+      logger.info('User bot webhook path: /user/' + config.webhookSecret);
+      logger.info('Admin bot webhook path: /admin/' + config.webhookSecret);
     });
-
-    const port = process.env.PORT || 3000;
-    const host = process.env.HOST || '0.0.0.0';
-    
-    await app.listen({ port, host });
-    app.log.info(`Server listening on http://${host}:${port}`);
-
-  } catch (err) {
-    app.log.error(err);
-    process.exit(1);
+  } else {
+    await userBot.startPolling();
+    await adminBot.startPolling();
+    logger.info('Bots started in polling mode');
+    http.createServer((req, res) => {
+      if (req.url === '/health' && req.method === 'GET') {
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ status: 'ok', time: new Date().toISOString() }));
+        return;
+      }
+      res.writeHead(404);
+      res.end('Not Found');
+    }).listen(config.webhookPort, () => {
+      logger.info(`Health server listening on port ${config.webhookPort}`);
+    });
   }
 }
 
-// Graceful stop
-process.once('SIGINT', () => {
-  console.log('SIGINT received');
-  process.exit(0);
+start().catch((error) => {
+  logger.error('Application failed to start', error.message || error);
+  process.exit(1);
 });
-process.once('SIGTERM', () => {
-  console.log('SIGTERM received');
-  process.exit(0);
-});
-
-start();

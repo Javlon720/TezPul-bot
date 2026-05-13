@@ -1,63 +1,120 @@
-import { query } from '../db/db.js';
-import { notifyNewReferral } from './notification.engine.js';
-import { getCampaignByCode } from './campaign.engine.js';
 
-/**
- * Registers a new user and links them to a referrer if applicable.
- */
-export async function registerReferral(newUser, referrerId, campaignCode) {
-    // 1. Create or ensure user exists
-    const res = await query(
-        `INSERT INTO users (telegram_id, username, name, phone) 
-         VALUES ($1, $2, $3, $4) 
-         ON CONFLICT (telegram_id) DO UPDATE SET name = EXCLUDED.name 
-         RETURNING id, balance`,
-        [newUser.telegram_id, newUser.username, newUser.name, newUser.phone]
-    );
-    const userId = res.rows[0].id;
+import { transaction } from '../db/pool.js';
+import * as userQueries from '../db/queries/users.queries.js';
+import * as referralQueries from '../db/queries/referrals.queries.js';
+import * as campaignQueries from '../db/queries/campaigns.queries.js';
+import { validateCallbackData } from '../utils/validators.js';
 
-    if (!referrerId || !campaignCode) return { userId };
+function createReferralCode(telegramId) {
+  const base = Number(telegramId).toString(36).toUpperCase();
+  const suffix = Math.random().toString(36).substring(2, 6).toUpperCase();
+  return `${base}-${suffix}`;
+}
 
-    // 2. Check if this referral already exists to prevent duplicate rewards
-    const existingRef = await query(
-        `SELECT id FROM referrals WHERE user_id = $1`,
-        [userId]
-    );
-    if (existingRef.rows.length > 0) {
-        return { userId, message: 'Already referred' };
+export async function generateReferralCode(telegramId) {
+  if (!Number.isInteger(telegramId) || telegramId <= 0) {
+    throw new Error('Invalid telegramId for referral code generation');
+  }
+  return transaction(async (client) => {
+    let code = createReferralCode(telegramId);
+    let existing = await userQueries.getUserByReferralCode(client, code);
+    let counter = 0;
+    while (existing && counter < 10) {
+      code = createReferralCode(telegramId);
+      existing = await userQueries.getUserByReferralCode(client, code);
+      counter += 1;
     }
-
-    // 3. Get campaign details
-    const campaign = await getCampaignByCode(campaignCode);
-    if (!campaign || !campaign.is_active) {
-        return { userId, message: 'Invalid or inactive campaign' };
+    if (existing) {
+      throw new Error('Unable to generate unique referral code');
     }
+    return code;
+  });
+}
 
-    // 4. Register referral
-    await query(
-        `INSERT INTO referrals (user_id, referrer_id, campaign_code) VALUES ($1, $2, $3)`,
-        [userId, referrerId, campaignCode]
-    );
+async function createReferralRecords(client, referrer, referred, campaign) {
+  const directReward = campaign ? Number(campaign.reward_amount) : 0;
+  await referralQueries.createReferral(client, {
+    referrerId: referrer.telegram_id,
+    referredId: referred.telegram_id,
+    campaignId: campaign?.id || null,
+    level: 1,
+    rewardAmount: directReward,
+    isSubscribed: false,
+    isRewarded: false
+  });
 
-    // 5. Calculate and apply rewards (100% direct, 50% parent)
-    const directReward = parseFloat(campaign.reward);
-    const parentReward = directReward * 0.5;
-
-    // Apply direct reward to referrer
-    await query(`UPDATE users SET balance = balance + $1 WHERE id = $2`, [directReward, referrerId]);
-    await notifyNewReferral(referrerId, directReward, 1);
-
-    // Check for parent referrer
-    const parentRes = await query(
-        `SELECT referrer_id FROM referrals WHERE user_id = $1`,
-        [referrerId]
-    );
-    
-    if (parentRes.rows.length > 0 && parentRes.rows[0].referrer_id) {
-        const parentId = parentRes.rows[0].referrer_id;
-        await query(`UPDATE users SET balance = balance + $1 WHERE id = $2`, [parentReward, parentId]);
-        await notifyNewReferral(parentId, parentReward, 2);
+  if (referrer.referred_by) {
+    const parent = await userQueries.getUserByTelegramId(client, referrer.referred_by);
+    if (parent) {
+      const secondReward = campaign ? Number(campaign.level2_reward_amount) : 0;
+      await referralQueries.createReferral(client, {
+        referrerId: parent.telegram_id,
+        referredId: referred.telegram_id,
+        campaignId: campaign?.id || null,
+        level: 2,
+        rewardAmount: secondReward,
+        isSubscribed: false,
+        isRewarded: false
+      });
     }
+  }
+}
 
-    return { userId, success: true };
+export async function processReferral(clientOrNull, referredTelegramId, referralCode) {
+  if (typeof referralCode !== 'string' || referralCode.trim() === '') {
+    return { success: false, reason: 'invalid_referral_code' };
+  }
+  const sanitizedCode = referralCode.trim();
+  if (!validateCallbackData(sanitizedCode)) {
+    return { success: false, reason: 'invalid_referral_code' };
+  }
+
+  const execute = async (client) => {
+    const referrer = await userQueries.getUserByReferralCode(client, sanitizedCode);
+    if (!referrer || !referrer.is_active) {
+      return { success: false, reason: 'referrer_not_found' };
+    }
+    if (referrer.telegram_id === referredTelegramId) {
+      return { success: false, reason: 'self_referral' };
+    }
+    const referred = await userQueries.getUserByTelegramId(client, referredTelegramId);
+    if (!referred) {
+      return { success: false, reason: 'referred_user_missing' };
+    }
+    const existingReferrals = await referralQueries.getReferralByReferredId(client, referredTelegramId);
+    if (existingReferrals.some((row) => row.referrer_id === referrer.telegram_id)) {
+      return { success: false, reason: 'already_referred' };
+    }
+    const campaign = await campaignQueries.getDefaultActiveCampaign(client);
+    await userQueries.createOrUpdateUser(client, referred, referred.referral_code, referrer.telegram_id);
+    await createReferralRecords(client, referrer, referred, campaign);
+    return { success: true, referrerId: referrer.telegram_id };
+  };
+
+  if (clientOrNull) {
+    return execute(clientOrNull);
+  }
+
+  return transaction(execute);
+}
+
+export async function checkAndUpdateSubscriptions(client, bot, referrerTelegramId) {
+  const referrals = await referralQueries.getReferralsByReferrerId(client, referrerTelegramId);
+  const updates = [];
+  for (const referral of referrals) {
+    if (!referral.campaign_id) {
+      continue;
+    }
+    try {
+      const member = await bot.getChatMember(referral.channel_id, referral.referred_id);
+      const subscribed = ['creator', 'administrator', 'member'].includes(member.status);
+      if (subscribed !== referral.is_subscribed || (subscribed && !referral.is_rewarded)) {
+        const updated = await referralQueries.updateReferralSubscription(client, referral.id, subscribed, subscribed);
+        updates.push(updated);
+      }
+    } catch (error) {
+      // ignore individual failures; keep stable
+    }
+  }
+  return updates;
 }

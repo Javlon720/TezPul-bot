@@ -1,0 +1,10 @@
+CREATE TABLE IF NOT EXISTS user_states (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  telegram_id BIGINT UNIQUE NOT NULL,
+  state VARCHAR(50) NOT NULL DEFAULT 'IDLE',
+  meta JSONB DEFAULT '{}'::jsonb,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_user_states_telegram_id ON user_states(telegram_id);
