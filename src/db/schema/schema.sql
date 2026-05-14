@@ -117,6 +117,22 @@ CREATE INDEX IF NOT EXISTS idx_spin_results_user_id ON spin_results(user_id);
 CREATE INDEX IF NOT EXISTS idx_spin_results_created  ON spin_results(created_at);
 CREATE INDEX IF NOT EXISTS idx_spin_segments_active   ON spin_segments(is_active);
 
+CREATE TABLE IF NOT EXISTS bot_channels (
+  id               SERIAL PRIMARY KEY,
+  channel_id       BIGINT UNIQUE NOT NULL,
+  channel_title    VARCHAR(255),
+  channel_username VARCHAR(255),
+  channel_type     VARCHAR(20),
+  bot_status       VARCHAR(20) NOT NULL DEFAULT 'member',
+  is_active        BOOLEAN NOT NULL DEFAULT true,
+  added_at         TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  removed_at       TIMESTAMPTZ,
+  created_at       TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at       TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_bot_channels_active ON bot_channels(is_active);
+
 CREATE INDEX IF NOT EXISTS idx_users_is_active         ON users(is_active);
 CREATE INDEX IF NOT EXISTS idx_users_referred_by       ON users(referred_by);
 CREATE INDEX IF NOT EXISTS idx_referrals_campaign_id   ON referrals(campaign_id);
