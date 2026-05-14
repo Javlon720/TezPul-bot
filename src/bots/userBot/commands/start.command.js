@@ -5,6 +5,17 @@ import { generateReferralCode, processReferral } from '../../../core/referral.en
 import { t } from '../../../services/i18n.service.js';
 import { mainKeyboard } from '../keyboards/main.keyboard.js';
 import { safeSend } from '../../../utils/safe-send.js';
+import { requireChannelSubscription } from '../../../core/subscription.engine.js';
+
+const MENU_KEYS = ['menu_check', 'menu_report', 'menu_share', 'menu_payment', 'menu_info', 'menu_spin', 'menu_language'];
+
+async function buildMainKeyboard(language) {
+  const labels = {};
+  for (const key of MENU_KEYS) {
+    labels[key] = await t(key, language);
+  }
+  return mainKeyboard((key) => labels[key] || key);
+}
 
 export async function handleStartCommand(bot, msg, match) {
   if (!msg?.from?.id || !msg.chat) {
@@ -13,7 +24,7 @@ export async function handleStartCommand(bot, msg, match) {
 
   const telegramId = msg.from.id;
   const existing = await userQueries.getUserByTelegramId(dbPool, telegramId);
-  const payload = (match && match[1]) ? String(match[1]).trim() : '';
+  const payload = (match && match[2]) ? String(match[2]).trim() : '';
   const language = existing?.language || 'uz';
 
   if (!existing) {
@@ -55,9 +66,14 @@ export async function handleStartCommand(bot, msg, match) {
   }
 
   await userQueries.clearUserState(dbPool, telegramId);
+
+  const passed = await requireChannelSubscription(bot, telegramId, msg.chat.id, language);
+  if (!passed) return;
+
   const text = await t('main_menu', language);
+  const keyboard = await buildMainKeyboard(language);
   await safeSend(bot, msg.chat.id, text, {
     parse_mode: 'Markdown',
-    reply_markup: mainKeyboard((key) => t(key, language))
+    reply_markup: keyboard
   });
 }

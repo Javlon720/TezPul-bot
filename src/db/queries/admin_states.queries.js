@@ -22,6 +22,20 @@ export async function setAdminState(adminTelegramId, state, stateData = {}) {
   return res.rows[0];
 }
 
+// state ni IDLE ga qaytaradi, lekin tilni (lang) saqlaydi
 export async function resetAdminState(adminTelegramId) {
-  return setAdminState(adminTelegramId, 'IDLE', {});
+  const current = await getAdminState(adminTelegramId);
+  const lang = current.state_data?.lang || 'uz';
+  return setAdminState(adminTelegramId, 'IDLE', { lang });
+}
+
+export async function getAdminLanguage(adminTelegramId) {
+  const state = await getAdminState(adminTelegramId);
+  return state.state_data?.lang || 'uz';
+}
+
+export async function setAdminLanguage(adminTelegramId, lang) {
+  const state = await getAdminState(adminTelegramId);
+  const newData = { ...(state.state_data || {}), lang };
+  return setAdminState(adminTelegramId, state.state, newData);
 }

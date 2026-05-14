@@ -23,3 +23,19 @@ export async function listCampaigns(client) {
   const result = await client.query('SELECT * FROM campaigns ORDER BY created_at DESC');
   return result.rows;
 }
+
+export async function getCampaignsByIds(client, ids) {
+  if (!ids.length) return [];
+  const result = await client.query(
+    'SELECT * FROM campaigns WHERE id = ANY($1::int[])',
+    [ids]
+  );
+  return result.rows;
+}
+
+export async function getActiveCampaigns(client) {
+  const result = await client.query(
+    'SELECT * FROM campaigns WHERE is_active = true ORDER BY created_at DESC'
+  );
+  return result.rows;
+}

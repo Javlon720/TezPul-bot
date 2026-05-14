@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { AsyncQueue, delay } from '../core/queue.system.js';
+import { MessageQueue, delay } from '../core/queue.system.js';
 
 const MAX_RETRY = 5;
 const BASE_DELAY_MS = 1000;
@@ -11,7 +11,7 @@ export function createTelegramApi(token) {
 
   const baseURL = `https://api.telegram.org/bot${token}`;
   const client = axios.create({ baseURL, timeout: 30000 });
-  const queue = new AsyncQueue(1);
+  const queue = new MessageQueue(1);
 
   async function dispatchRequest(method, path, payload = {}, params = {}) {
     return queue.add(async () => {
@@ -89,4 +89,8 @@ export function buildInlineKeyboard(rows) {
   return {
     inline_keyboard: rows
   };
+}
+
+export function formatUserName(user, fallback = '') {
+  return [user?.first_name, user?.last_name].filter(Boolean).join(' ') || fallback;
 }

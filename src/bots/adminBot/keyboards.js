@@ -6,6 +6,7 @@ export function adminMainKeyboard() {
     [{ text: '📊 Statistics', callback_data: 'admin_statistics' }],
     [{ text: '💰 Payments', callback_data: 'admin_payments_1' }],
     [{ text: '📢 Campaigns', callback_data: 'admin_campaigns' }],
+    [{ text: '🎰 Spin', callback_data: 'spin_list' }],
     [{ text: '🔐 Admins', callback_data: 'admin_admins' }],
     [{ text: '⚙️ Settings', callback_data: 'admin_settings' }]
   ]);

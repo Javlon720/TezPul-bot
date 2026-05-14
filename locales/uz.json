@@ -44,5 +44,8 @@
   "spin_win_bonus": "🎰 *Tabriklaymiz!*\n\n+*{value} ta bonus spin* qo'shildi!\n\nYana o'ynash uchun bosing.",
   "spin_miss": "😔 *Omadsiz!*\n\nKeyingi spin uchun *{needed} ta do'st* taklif qiling.\nHozirgi: *{pending}/2*",
   "spin_history_title": "📋 *Spin tarixingiz:*",
-  "spin_history_empty": "📋 Hali spin o'ynamagansiz."
+  "spin_history_empty": "📋 Hali spin o'ynamagansiz.",
+
+  "sub_required": "📢 *Botdan foydalanish uchun quyidagi kanallarga obuna bo'ling:*\n\nObuna bo'lgach, ✅ tugmasini bosing.",
+  "sub_check_btn": "✅ Obunani tekshirish"
 }

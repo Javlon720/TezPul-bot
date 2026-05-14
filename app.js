@@ -66,7 +66,7 @@ process.on('unhandledRejection', (reason) => {
 
 async function start() {
   const userBot = createUserBot();
-  const adminBot = createAdminBot();
+  const adminBot = createAdminBot(userBot);
   await runStartupChecks(userBot, adminBot);
 
   if (config.webhookUrl) {

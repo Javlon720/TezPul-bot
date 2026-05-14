@@ -59,3 +59,53 @@ export async function listPayments(client, limit = 10, offset = 0) {
   );
   return result.rows;
 }
+
+export async function listPaymentsWithUsers(client, limit = 10, offset = 0) {
+  const result = await client.query(
+    `SELECT p.*, u.username, u.first_name, u.last_name, u.phone
+     FROM payments p
+     LEFT JOIN users u ON u.telegram_id = p.user_id
+     ORDER BY
+       CASE p.status WHEN 'pending' THEN 0 WHEN 'partial' THEN 1 ELSE 2 END,
+       p.updated_at DESC
+     LIMIT $1 OFFSET $2`,
+    [limit, offset]
+  );
+  return result.rows;
+}
+
+export async function getPaymentsStats(client) {
+  const result = await client.query(
+    `SELECT
+       COUNT(*)                                             AS total,
+       COUNT(*) FILTER (WHERE status = 'pending')          AS pending,
+       COUNT(*) FILTER (WHERE status = 'partial')          AS partial,
+       COUNT(*) FILTER (WHERE status = 'paid')             AS paid,
+       COUNT(*) FILTER (WHERE status = 'cancelled')        AS cancelled,
+       COALESCE(SUM(paid_amount) FILTER (WHERE status = 'paid'), 0) AS total_paid
+     FROM payments`
+  );
+  return result.rows[0];
+}
+
+export async function getPaymentWithUserAndCampaign(client, userId) {
+  const result = await client.query(
+    `SELECT p.*,
+            u.username, u.first_name, u.last_name, u.phone,
+            c.name AS campaign_name, c.channel_id AS campaign_channel_id,
+            c.channel_username AS campaign_channel_username
+     FROM payments p
+     LEFT JOIN users u ON u.telegram_id = p.user_id
+     LEFT JOIN referrals r ON r.referred_id = p.user_id AND r.level = 1
+     LEFT JOIN campaigns c ON c.id = r.campaign_id
+     WHERE p.user_id = $1
+     LIMIT 1`,
+    [userId]
+  );
+  return result.rows[0] || null;
+}
+
+export async function countPayments(client) {
+  const result = await client.query('SELECT COUNT(*) AS cnt FROM payments');
+  return Number(result.rows[0]?.cnt || 0);
+}

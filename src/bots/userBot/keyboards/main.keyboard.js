@@ -8,6 +8,7 @@ export function mainKeyboard(languageText) {
       [{ text: languageText('menu_check') }, { text: languageText('menu_report') }],
       [{ text: languageText('menu_share') }],
       [{ text: languageText('menu_payment') }, { text: languageText('menu_info') }],
+      [{ text: languageText('menu_spin') }],
       [{ text: languageText('menu_language') }]
     ]
   };

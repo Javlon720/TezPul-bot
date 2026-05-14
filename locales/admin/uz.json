@@ -1,0 +1,79 @@
+{
+  "welcome": "👋 Xush kelibsiz, *{name}*!\n\n🔐 Admin panel:",
+  "unauthorized": "❌ Sizda admin huquqi yo'q.",
+  "error": "❌ Xatolik yuz berdi.",
+  "select_language": "🌐 Tilni tanlang:",
+  "lang_changed": "✅ Til o'zgartirildi: O'zbekcha",
+
+  "btn_confirm":  "✅ Tasdiqlash",
+  "btn_save":     "💾 Saqlash",
+  "btn_cancel":   "❌ Bekor",
+  "btn_restart":  "🔄 Qaytadan",
+  "btn_back":     "↩️ Orqaga",
+
+  "spin_select_type":  "🎡 *Sektor #{id} tahrirlash*\n\nType tanlang:",
+  "spin_enter_value":  "💰 *Qiymat kiriting:*\n_(misol: {example})_",
+  "spin_skip_value":   "ℹ️ Miss uchun qiymat kerak emas. Label kiriting:",
+  "spin_enter_label":  "🏷 *Ko'rsatiladigan nom kiriting:*\n_(misol: {example})_",
+  "spin_select_color": "🎨 *Rang tanlang:*",
+  "spin_confirm": "📋 *O'zgarishlarni tasdiqlang:*\n\nType:  `{type}`\nValue: `{value}`\nLabel: `{label}`\nColor: {color}",
+  "spin_saved":   "✅ *Sektor #{id} saqlandi!*\n\nType:  `{type}`\nValue: `{value}`\nLabel: `{label}`",
+  "spin_cancelled": "❌ Tahrirlash bekor qilindi.",
+  "spin_bad_input": "❌ Noto'g'ri kiritildi. Iltimos qaytadan kiriting.",
+
+  "users_stats": "👥 *Foydalanuvchilar statistikasi*\n\n• Jami: `{total}`\n• Aktiv: `{active}`\n• So'nggi 24 soat: `{new_24h}`\n• So'nggi 7 kun: `{new_7d}`\n• Telefon raqam bor: `{with_phone}`",
+
+  "stat_all": "📊 *Umumiy statistika*\n\n👥 *Foydalanuvchilar*\n• Jami: `{u_total}` | Aktiv: `{u_active}`\n• Bugun: `{u_24h}` | 7 kun: `{u_7d}`\n\n💰 *To'lovlar*\n• Jami: `{p_total}`\n• ⏳ Kutmoqda: `{p_pending}`\n• 🔄 Qisman: `{p_partial}`\n• ✅ To'langan: `{p_paid}`\n• Jami summa: `{p_sum}` so'm\n\n🎰 *Spin*\n• Jami spin: `{s_total}`\n• Yutganlar: `{s_wins}`\n• Berilgan pul: `{s_money}` so'm",
+
+  "payments_empty": "💰 Hozircha hech qanday to'lov yo'q.",
+  "payments_header": "💰 *To'lovlar* ({count} ta):",
+  "payment_paid_label": "💰 To'langan:",
+  "payment_status_label": "📋 Holat:",
+  "payment_status_pending": "⏳ Kutmoqda",
+  "payment_status_partial": "🔄 Qisman",
+  "payment_status_paid": "✅ To'langan",
+  "payment_status_cancelled": "❌ Bekor",
+
+  "campaigns_empty": "📢 Hozircha hech qanday kampaniya yo'q.",
+  "campaigns_header": "📢 *Kampaniyalar* ({count} ta):",
+  "campaign_reward": "Mukofot",
+  "campaign_level2": "2-daraja",
+
+  "spin_panel": "🎰 *Spin boshqaruvi*\n\n📊 Statistika:\n• Jami spin: `{total}`\n• Yutganlar: `{wins}` | Miss: `{miss}`\n• Berilgan pul: `{money}` so'm\n\n🎡 Sektorlar ({seg_count} ta):\n{segments}",
+  "spin_btn_edit": "✏️ Sektor tahrirlash",
+  "spin_btn_stats": "📊 Batafsil statistika",
+
+  "admins_header": "🔐 *Adminlar ({count} ta):*",
+  "admins_none": "Hali admin qo'shilmagan",
+  "admins_mgmt": "*Boshqaruv:*\n`/admin-add <id> <channel_id>`\n`/admin-remove <id>`\n`/admin-list`",
+
+  "settings_panel": "⚙️ *Tizim ma'lumotlari*\n\n🤖 Muhit: `{env}`\n👑 Super admin ID: `{super_id}`",
+
+  "btn_users":      "👥 Foydalanuvchilar",
+  "btn_statistics": "📊 Statistika",
+  "btn_payments":   "💰 To'lovlar",
+  "btn_campaigns":  "📢 Kampaniyalar",
+  "btn_spin":       "🎰 Spin",
+  "btn_admins":     "🔐 Adminlar",
+  "btn_settings":   "⚙️ Sozlamalar",
+  "btn_language":   "🌐 Til",
+
+  "admin_btn_add":       "➕ Admin qo'shish",
+  "admin_btn_remove":    "➖ Admin o'chirish",
+  "admin_btn_list":      "📋 Ro'yxat",
+  "admin_only_super":    "❌ Faqat super admin bu amalni bajarishi mumkin.",
+  "admin_enter_id":      "🆔 *Admin Telegram ID sini kiriting:*\n_(misol: 123456789)_",
+  "admin_enter_channel": "📢 *Kanal ID sini kiriting:*\n_(misol: -1001234567890)_",
+  "admin_added":         "✅ *Admin qo'shildi!*\n\n🆔 ID: `{id}`\n📢 Kanal: `{channel}`",
+  "admin_exists":        "⚠️ Bu admin allaqachon mavjud.",
+  "admin_remove_enter":  "🆔 *O'chiriladigan admin ID sini kiriting:*",
+  "admin_removed":       "✅ *Admin o'chirildi!*\n\n🆔 ID: `{id}`",
+  "admin_not_found":     "⚠️ Bunday admin topilmadi.",
+  "admin_cancelled":     "❌ Amal bekor qilindi.",
+  "admin_bad_id":        "❌ Noto'g'ri ID. Faqat raqam kiriting.",
+  "admins_list_header":  "🔐 *Adminlar ({count} ta):*",
+
+  "payment_cancelled_ok":  "❌ To'lov bekor qilindi",
+  "payment_proof_request": "📸 Rasm yuboring",
+  "payment_partial_ok":    "⏳ Kutish holatiga qaytarildi"
+}

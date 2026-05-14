@@ -44,5 +44,8 @@
   "spin_win_bonus": "🎰 *Congratulations!*\n\n+*{value} bonus spin(s)* added!",
   "spin_miss": "😔 *No luck!*\n\nInvite *{needed} more friends*.\nCurrent: *{pending}/2*",
   "spin_history_title": "📋 *Your spin history:*",
-  "spin_history_empty": "📋 You haven't played spin yet."
+  "spin_history_empty": "📋 You haven't played spin yet.",
+
+  "sub_required": "📢 *To use the bot, please subscribe to the following channels:*\n\nAfter subscribing, press ✅.",
+  "sub_check_btn": "✅ Check subscription"
 }

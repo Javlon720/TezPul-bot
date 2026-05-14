@@ -27,7 +27,7 @@ async function loadSchema() {
 }
 
 async function verifyTablesExist() {
-  const requiredTables = ['users', 'user_states', 'campaigns', 'referrals', 'payments', 'admin_channels', 'admin_states'];
+  const requiredTables = ['users', 'user_states', 'campaigns', 'referrals', 'payments', 'admin_channels', 'admin_states', 'spin_segments', 'spin_results', 'bot_channels'];
   const result = await query(
     `SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_name = ANY($1)`,
     [requiredTables]

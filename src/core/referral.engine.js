@@ -4,6 +4,8 @@ import * as userQueries from '../db/queries/users.queries.js';
 import * as referralQueries from '../db/queries/referrals.queries.js';
 import * as campaignQueries from '../db/queries/campaigns.queries.js';
 import { validateCallbackData } from '../utils/validators.js';
+import { onReferralAdded } from './spin.engine.js';
+import { logger } from '../utils/logger.js';
 
 function createReferralCode(telegramId) {
   const base = Number(telegramId).toString(36).toUpperCase();
@@ -88,14 +90,25 @@ export async function processReferral(clientOrNull, referredTelegramId, referral
     const campaign = await campaignQueries.getDefaultActiveCampaign(client);
     await userQueries.createOrUpdateUser(client, referred, referred.referral_code, referrer.telegram_id);
     await createReferralRecords(client, referrer, referred, campaign);
-    return { success: true, referrerId: referrer.telegram_id };
+    return { success: true, referrerId: referrer.telegram_id, referrerTelegramId: referrer.telegram_id };
   };
 
+  let result;
   if (clientOrNull) {
-    return execute(clientOrNull);
+    result = await execute(clientOrNull);
+  } else {
+    result = await transaction(execute);
   }
 
-  return transaction(execute);
+  if (result.success && result.referrerTelegramId) {
+    try {
+      await onReferralAdded(result.referrerTelegramId);
+    } catch (spinErr) {
+      logger.warn('spin.onReferralAdded failed', spinErr.message);
+    }
+  }
+
+  return result;
 }
 
 export async function checkAndUpdateSubscriptions(client, bot, referrerTelegramId) {

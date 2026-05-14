@@ -1,0 +1,79 @@
+{
+  "welcome": "👋 Welcome, *{name}*!\n\n🔐 Admin panel:",
+  "unauthorized": "❌ You don't have admin rights.",
+  "error": "❌ An error occurred.",
+  "select_language": "🌐 Select language:",
+  "lang_changed": "✅ Language changed: English",
+
+  "btn_confirm":  "✅ Confirm",
+  "btn_save":     "💾 Save",
+  "btn_cancel":   "❌ Cancel",
+  "btn_restart":  "🔄 Restart",
+  "btn_back":     "↩️ Back",
+
+  "spin_select_type":  "🎡 *Edit segment #{id}*\n\nSelect type:",
+  "spin_enter_value":  "💰 *Enter value:*\n_(example: {example})_",
+  "spin_skip_value":   "ℹ️ No value needed for Miss. Enter Label:",
+  "spin_enter_label":  "🏷 *Enter display label:*\n_(example: {example})_",
+  "spin_select_color": "🎨 *Select color:*",
+  "spin_confirm": "📋 *Confirm changes:*\n\nType:  `{type}`\nValue: `{value}`\nLabel: `{label}`\nColor: {color}",
+  "spin_saved":   "✅ *Segment #{id} saved!*\n\nType:  `{type}`\nValue: `{value}`\nLabel: `{label}`",
+  "spin_cancelled": "❌ Editing cancelled.",
+  "spin_bad_input": "❌ Invalid input. Please try again.",
+
+  "users_stats": "👥 *Users statistics*\n\n• Total: `{total}`\n• Active: `{active}`\n• Last 24h: `{new_24h}`\n• Last 7 days: `{new_7d}`\n• With phone: `{with_phone}`",
+
+  "stat_all": "📊 *Overall statistics*\n\n👥 *Users*\n• Total: `{u_total}` | Active: `{u_active}`\n• Today: `{u_24h}` | 7 days: `{u_7d}`\n\n💰 *Payments*\n• Total: `{p_total}`\n• ⏳ Pending: `{p_pending}`\n• 🔄 Partial: `{p_partial}`\n• ✅ Paid: `{p_paid}`\n• Sum: `{p_sum}` UZS\n\n🎰 *Spin*\n• Total spins: `{s_total}`\n• Winners: `{s_wins}`\n• Money paid: `{s_money}` UZS",
+
+  "payments_empty": "💰 No payments yet.",
+  "payments_header": "💰 *Payments* ({count}):",
+  "payment_paid_label": "💰 Paid:",
+  "payment_status_label": "📋 Status:",
+  "payment_status_pending": "⏳ Pending",
+  "payment_status_partial": "🔄 Partial",
+  "payment_status_paid": "✅ Paid",
+  "payment_status_cancelled": "❌ Cancelled",
+
+  "campaigns_empty": "📢 No campaigns yet.",
+  "campaigns_header": "📢 *Campaigns* ({count}):",
+  "campaign_reward": "Reward",
+  "campaign_level2": "Level 2",
+
+  "spin_panel": "🎰 *Spin management*\n\n📊 Statistics:\n• Total spins: `{total}`\n• Winners: `{wins}` | Miss: `{miss}`\n• Money paid: `{money}` UZS\n\n🎡 Segments ({seg_count}):\n{segments}",
+  "spin_btn_edit": "✏️ Edit segment",
+  "spin_btn_stats": "📊 Detailed statistics",
+
+  "admins_header": "🔐 *Admins ({count}):*",
+  "admins_none": "No admins added yet",
+  "admins_mgmt": "*Management:*\n`/admin-add <id> <channel_id>`\n`/admin-remove <id>`\n`/admin-list`",
+
+  "settings_panel": "⚙️ *System info*\n\n🤖 Environment: `{env}`\n👑 Super admin ID: `{super_id}`",
+
+  "btn_users":      "👥 Users",
+  "btn_statistics": "📊 Statistics",
+  "btn_payments":   "💰 Payments",
+  "btn_campaigns":  "📢 Campaigns",
+  "btn_spin":       "🎰 Spin",
+  "btn_admins":     "🔐 Admins",
+  "btn_settings":   "⚙️ Settings",
+  "btn_language":   "🌐 Language",
+
+  "admin_btn_add":       "➕ Add admin",
+  "admin_btn_remove":    "➖ Remove admin",
+  "admin_btn_list":      "📋 List",
+  "admin_only_super":    "❌ Only super admin can perform this action.",
+  "admin_enter_id":      "🆔 *Enter admin Telegram ID:*\n_(example: 123456789)_",
+  "admin_enter_channel": "📢 *Enter channel ID:*\n_(example: -1001234567890)_",
+  "admin_added":         "✅ *Admin added!*\n\n🆔 ID: `{id}`\n📢 Channel: `{channel}`",
+  "admin_exists":        "⚠️ This admin already exists.",
+  "admin_remove_enter":  "🆔 *Enter the admin ID to remove:*",
+  "admin_removed":       "✅ *Admin removed!*\n\n🆔 ID: `{id}`",
+  "admin_not_found":     "⚠️ Admin not found.",
+  "admin_cancelled":     "❌ Action cancelled.",
+  "admin_bad_id":        "❌ Invalid ID. Numbers only.",
+  "admins_list_header":  "🔐 *Admins ({count}):*",
+
+  "payment_cancelled_ok":  "❌ Payment cancelled",
+  "payment_proof_request": "📸 Send proof photo",
+  "payment_partial_ok":    "⏳ Returned to pending"
+}

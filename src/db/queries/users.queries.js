@@ -98,3 +98,32 @@ export async function getAllUsers(client) {
   const result = await client.query('SELECT * FROM users ORDER BY created_at DESC');
   return result.rows;
 }
+
+export async function getUserWithState(client, telegramId) {
+  const result = await client.query(
+    `SELECT u.*, us.state, us.state_data
+     FROM users u
+     LEFT JOIN user_states us ON us.telegram_id = u.telegram_id
+     WHERE u.telegram_id = $1`,
+    [telegramId]
+  );
+  if (!result.rows[0]) return { user: null, userState: null };
+  const { state, state_data, ...user } = result.rows[0];
+  return {
+    user,
+    userState: state ? { telegram_id: telegramId, state, state_data } : null,
+  };
+}
+
+export async function getUserStats(client) {
+  const result = await client.query(
+    `SELECT
+       COUNT(*)                                                              AS total,
+       COUNT(*) FILTER (WHERE is_active = true)                             AS active,
+       COUNT(*) FILTER (WHERE created_at >= NOW() - INTERVAL '24 hours')    AS new_24h,
+       COUNT(*) FILTER (WHERE created_at >= NOW() - INTERVAL '7 days')      AS new_7d,
+       COUNT(*) FILTER (WHERE phone IS NOT NULL)                             AS with_phone
+     FROM users`
+  );
+  return result.rows[0];
+}

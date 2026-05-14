@@ -29,6 +29,7 @@ export const config = Object.freeze({
   webhookSecret: process.env.WEBHOOK_SECRET || '',
   databaseUrl: process.env.DATABASE_URL,
   superAdminId: Number(process.env.SUPER_ADMIN_ID),
+  reportChannelId: process.env.REPORT_CHANNEL_ID ? Number(process.env.REPORT_CHANNEL_ID) : null,
   nodeEnv: process.env.NODE_ENV,
   logLevel: process.env.LOG_LEVEL
 });

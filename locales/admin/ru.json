@@ -1,0 +1,79 @@
+{
+  "welcome": "👋 Добро пожаловать, *{name}*!\n\n🔐 Панель администратора:",
+  "unauthorized": "❌ У вас нет прав администратора.",
+  "error": "❌ Произошла ошибка.",
+  "select_language": "🌐 Выберите язык:",
+  "lang_changed": "✅ Язык изменён: Русский",
+
+  "btn_confirm":  "✅ Подтвердить",
+  "btn_save":     "💾 Сохранить",
+  "btn_cancel":   "❌ Отмена",
+  "btn_restart":  "🔄 Сначала",
+  "btn_back":     "↩️ Назад",
+
+  "spin_select_type":  "🎡 *Редактирование сектора #{id}*\n\nВыберите тип:",
+  "spin_enter_value":  "💰 *Введите значение:*\n_(пример: {example})_",
+  "spin_skip_value":   "ℹ️ Для Miss значение не нужно. Введите Label:",
+  "spin_enter_label":  "🏷 *Введите отображаемое название:*\n_(пример: {example})_",
+  "spin_select_color": "🎨 *Выберите цвет:*",
+  "spin_confirm": "📋 *Подтвердите изменения:*\n\nType:  `{type}`\nValue: `{value}`\nLabel: `{label}`\nColor: {color}",
+  "spin_saved":   "✅ *Сектор #{id} сохранён!*\n\nType:  `{type}`\nValue: `{value}`\nLabel: `{label}`",
+  "spin_cancelled": "❌ Редактирование отменено.",
+  "spin_bad_input": "❌ Неверный ввод. Пожалуйста, введите снова.",
+
+  "users_stats": "👥 *Статистика пользователей*\n\n• Всего: `{total}`\n• Активных: `{active}`\n• За 24 часа: `{new_24h}`\n• За 7 дней: `{new_7d}`\n• С телефоном: `{with_phone}`",
+
+  "stat_all": "📊 *Общая статистика*\n\n👥 *Пользователи*\n• Всего: `{u_total}` | Актив: `{u_active}`\n• Сегодня: `{u_24h}` | 7 дней: `{u_7d}`\n\n💰 *Платежи*\n• Всего: `{p_total}`\n• ⏳ Ожидание: `{p_pending}`\n• 🔄 Частично: `{p_partial}`\n• ✅ Оплачено: `{p_paid}`\n• Сумма: `{p_sum}` сум\n\n🎰 *Спин*\n• Всего спинов: `{s_total}`\n• Победители: `{s_wins}`\n• Выдано: `{s_money}` сум",
+
+  "payments_empty": "💰 Платежей пока нет.",
+  "payments_header": "💰 *Платежи* ({count} шт.):",
+  "payment_paid_label": "💰 Оплачено:",
+  "payment_status_label": "📋 Статус:",
+  "payment_status_pending": "⏳ Ожидание",
+  "payment_status_partial": "🔄 Частично",
+  "payment_status_paid": "✅ Оплачено",
+  "payment_status_cancelled": "❌ Отменено",
+
+  "campaigns_empty": "📢 Кампаний пока нет.",
+  "campaigns_header": "📢 *Кампании* ({count} шт.):",
+  "campaign_reward": "Вознаграждение",
+  "campaign_level2": "2 уровень",
+
+  "spin_panel": "🎰 *Управление спином*\n\n📊 Статистика:\n• Всего спинов: `{total}`\n• Победители: `{wins}` | Miss: `{miss}`\n• Выдано: `{money}` сум\n\n🎡 Секторы ({seg_count} шт.):\n{segments}",
+  "spin_btn_edit": "✏️ Редактировать сектор",
+  "spin_btn_stats": "📊 Подробная статистика",
+
+  "admins_header": "🔐 *Администраторы ({count} шт.):*",
+  "admins_none": "Администраторов пока нет",
+  "admins_mgmt": "*Управление:*\n`/admin-add <id> <channel_id>`\n`/admin-remove <id>`\n`/admin-list`",
+
+  "settings_panel": "⚙️ *Информация о системе*\n\n🤖 Среда: `{env}`\n👑 Super admin ID: `{super_id}`",
+
+  "btn_users":      "👥 Пользователи",
+  "btn_statistics": "📊 Статистика",
+  "btn_payments":   "💰 Платежи",
+  "btn_campaigns":  "📢 Кампании",
+  "btn_spin":       "🎰 Спин",
+  "btn_admins":     "🔐 Администраторы",
+  "btn_settings":   "⚙️ Настройки",
+  "btn_language":   "🌐 Язык",
+
+  "admin_btn_add":       "➕ Добавить админа",
+  "admin_btn_remove":    "➖ Удалить админа",
+  "admin_btn_list":      "📋 Список",
+  "admin_only_super":    "❌ Только супер-админ может выполнить это действие.",
+  "admin_enter_id":      "🆔 *Введите Telegram ID администратора:*\n_(пример: 123456789)_",
+  "admin_enter_channel": "📢 *Введите ID канала:*\n_(пример: -1001234567890)_",
+  "admin_added":         "✅ *Администратор добавлен!*\n\n🆔 ID: `{id}`\n📢 Канал: `{channel}`",
+  "admin_exists":        "⚠️ Этот администратор уже существует.",
+  "admin_remove_enter":  "🆔 *Введите ID администратора для удаления:*",
+  "admin_removed":       "✅ *Администратор удалён!*\n\n🆔 ID: `{id}`",
+  "admin_not_found":     "⚠️ Такой администратор не найден.",
+  "admin_cancelled":     "❌ Действие отменено.",
+  "admin_bad_id":        "❌ Неверный ID. Введите только цифры.",
+  "admins_list_header":  "🔐 *Администраторы ({count} шт.):*",
+
+  "payment_cancelled_ok":  "❌ Платёж отменён",
+  "payment_proof_request": "📸 Отправьте фото",
+  "payment_partial_ok":    "⏳ Возвращено в ожидание"
+}
