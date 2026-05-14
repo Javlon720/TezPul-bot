@@ -31,8 +31,18 @@
   "payment_remaining": "Remaining amount: {amount}",
   "payment_status": "Status: {status}",
   "info_text": "System info: invite friends with your referral link, monitor referrals, and manage payment status.",
-  "phone_saved": "Your phone number is saved. Main menu:",
+  "phone_saved": "✅ Welcome, *{name}*!\n📱 Your number: *{phone}*\n\nMain menu:",
   "request_contact_again": "Please send your contact using the button.",
   "admin_unauthorized": "You do not have permission.",
-  "unknown_callback": "❌ Unknown action"
+  "unknown_callback": "❌ Unknown action",
+  "menu_spin": "🎰 Spin",
+  "spin_has_spins": "🎰 *Spin Game*\n\nYou have *{count}* spin(s)!\n💰 Spin balance: *{balance} sum*\n\nSpin and win!",
+  "spin_no_spins": "🎰 *No spins available*\n\nInvite *2 friends* to get a spin.\n\nCurrent: *{pending}/2*\nNeed {needed} more!\n\nYour link:",
+  "spin_no_spins_now": "❌ No spins left. Invite 2 friends!",
+  "spin_win_money": "🎉 *Congratulations!*\n\n💰 *{amount} sum* added to your balance!",
+  "spin_win_premium": "⭐ *Congratulations!*\n\n🌟 *Premium {value}* activated!",
+  "spin_win_bonus": "🎰 *Congratulations!*\n\n+*{value} bonus spin(s)* added!",
+  "spin_miss": "😔 *No luck!*\n\nInvite *{needed} more friends*.\nCurrent: *{pending}/2*",
+  "spin_history_title": "📋 *Your spin history:*",
+  "spin_history_empty": "📋 You haven't played spin yet."
 }

@@ -31,8 +31,18 @@
   "payment_remaining": "Qoldiq summa: {amount}",
   "payment_status": "Holat: {status}",
   "info_text": "Tizim haqida: referral kod orqali do'stlaringizni taklif qiling, a'zolik shartlari va to'lov ma'lumotlari shu yerda.",
-  "phone_saved": "Telefon raqamingiz saqlandi. Asosiy menyu:",
+  "phone_saved": "✅ Xush kelibsiz, *{name}*!\n📱 Raqamingiz: *{phone}*\n\nAsosiy menyu:",
   "request_contact_again": "Iltimos, raqamingizni yuqoridagi tugma orqali yuboring.",
   "admin_unauthorized": "Sizda bu amalni bajarish uchun ruxsat yo'q.",
-  "unknown_callback": "❌ Noma'lum amal"
+  "unknown_callback": "❌ Noma'lum amal",
+  "menu_spin": "🎰 Spin",
+  "spin_has_spins": "🎰 *Spin o'yini*\n\nSizda *{count} ta* spin huquqi bor!\n💰 Spin balansi: *{balance} so'm*\n\nSpin bosing va yuting!",
+  "spin_no_spins": "🎰 *Spin huquqi yo'q*\n\nSpin olish uchun *2 ta do'st* taklif qiling.\n\nHozirgi holat: *{pending}/2*\n{needed} ta do'st yana kerak!\n\nHavolangiz:",
+  "spin_no_spins_now": "❌ Spin huquqingiz tugadi. 2 ta do'st taklif qiling!",
+  "spin_win_money": "🎉 *Tabriklaymiz!*\n\n💰 *{amount} so'm* balansingizga qo'shildi!\n\n💳 To'lov bo'limidan pulni so'rang.",
+  "spin_win_premium": "⭐ *Tabriklaymiz!*\n\n🌟 *Premium {value}* aktivlashtirildi!\n\nAdmin bilan bog'laning.",
+  "spin_win_bonus": "🎰 *Tabriklaymiz!*\n\n+*{value} ta bonus spin* qo'shildi!\n\nYana o'ynash uchun bosing.",
+  "spin_miss": "😔 *Omadsiz!*\n\nKeyingi spin uchun *{needed} ta do'st* taklif qiling.\nHozirgi: *{pending}/2*",
+  "spin_history_title": "📋 *Spin tarixingiz:*",
+  "spin_history_empty": "📋 Hali spin o'ynamagansiz."
 }
