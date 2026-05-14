@@ -1,5 +1,5 @@
 {
-  "name": "tezPul",
+  "name": "TezPul",
   "version": "1.0.0",
   "description": "Stable Telegram SaaS referral system with PostgreSQL backend.",
   "main": "app.js",
